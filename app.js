@@ -3,14 +3,6 @@ const mongoose = require('mongoose');
 const Recipe = require('./models/recipe');
 const bodyParser = require('body-parser');
 
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    next();
-});
-
-
 const app = express();
 app.use(bodyParser.json());
 const password = 'U3S9hCOUdd1oKQ4t';
@@ -22,6 +14,14 @@ mongoose.connect(connectionUrl).
     	console.log('Unable to connect to MongoDB Atlas!');
     	console.error(error);
     });
+
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
+});
+
 
 app.get('/api/recipes/:id', (req, res, next) =>{
 	Recipe.findOne({_id : req.params.id}).
@@ -45,7 +45,7 @@ app.put('/api/recipes/:id', (req, res, next) =>{
 		title : req.body.title,
 		ingredients : req.body.ingredients,
 		instructions : req.body.instructions,
-		time : req.body.time, 
+		time : req.body.time,
 		difficulty : req.body.difficulty
 	});
 	Recipe.updateOne({_id : req.params.id}, recipe).
